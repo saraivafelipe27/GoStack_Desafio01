@@ -1,26 +1,23 @@
-const express = require('express');
+const express = require("express");
 
 const app = express();
 
 app.use(express.json());
 
-
 const projects = [];
 
 function checkProjectExists(req, res, next) {
   const { id } = req.params;
-  const project = projects.find(p => p.id == id);
+  const project = projects.find(p => p.id === id);
 
   if (!project) {
-    return res.status(400).json({ error: 'Project not found' });
+    return res.status(400).json({ error: "Project not found" });
   }
 
   return next();
 }
 
-
 function logRequests(req, res, next) {
-
   console.count("Número de requisições");
 
   return next();
@@ -28,17 +25,15 @@ function logRequests(req, res, next) {
 
 app.use(logRequests);
 
-app.get('/projects', (req, res) => {
-    return res.json(projects);
-  });
+app.get("/projects", (req, res) => res.json(projects));
 
-app.post('/projects', (req, res) => {
+app.post("/projects", (req, res) => {
   const { id, title } = req.body;
 
   const project = {
     id,
     title,
-    tasks: []
+    tasks: [],
   };
 
   projects.push(project);
@@ -46,35 +41,32 @@ app.post('/projects', (req, res) => {
   return res.json(project);
 });
 
-
-app.put('/projects/:id', checkProjectExists, (req, res) => {
+app.put("/projects/:id", checkProjectExists, (req, res) => {
   const { id } = req.params;
   const { title } = req.body;
 
-  const project = projects.find(p => p.id == id);
+  const project = projects.find(p => p.id === id);
 
   project.title = title;
 
   return res.json(project);
 });
 
-
-app.delete('/projects/:id', checkProjectExists, (req, res) => {
+app.delete("/projects/:id", checkProjectExists, (req, res) => {
   const { id } = req.params;
 
-  const projectIndex = projects.findIndex(p => p.id == id);
+  const projectIndex = projects.findIndex(p => p.id === id);
 
   projects.splice(projectIndex, 1);
 
   return res.send();
 });
 
-
-app.post('/projects/:id/tasks', checkProjectExists, (req, res) => {
+app.post("/projects/:id/tasks", checkProjectExists, (req, res) => {
   const { id } = req.params;
   const { title } = req.body;
 
-  const project = projects.find(p => p.id == id);
+  const project = projects.find(p => p.id === id);
 
   project.tasks.push(title);
 
